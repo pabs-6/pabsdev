@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/Badge'
+import { SectionDivider } from '@/components/ui/SectionDivider'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { projects, type Project } from '@/lib/data'
 import { motion } from 'framer-motion'
@@ -6,16 +7,28 @@ import { Star } from 'lucide-react'
 import { useState } from 'react'
 import { ProjectModal } from '@/components/ui/ProjectModal'
 
-export function Projects() {
+interface ProjectsProps {
+  language: 'es' | 'en'
+}
+
+export function Projects({ language }: ProjectsProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   return (
     <section id="projects" className="px-6 py-24">
       <div className="mx-auto max-w-5xl">
         <SectionHeading
-          label="Proyectos"
-          title="Mis trabajos"
-          description="Una selección de proyectos desarrollados, incluyendo mi TFG."
+          label={language === 'es' ? 'Proyectos' : 'Projects'}
+          title={
+            language === 'es'
+              ? 'Productos que demuestran mi capacidad técnica'
+              : 'Products that showcase my technical ability'
+          }
+          description={
+            language === 'es'
+              ? 'Aplicaciones full-stack desplegadas en producción, desde mi TFG hasta productos propios con usuarios reales.'
+              : 'Full-stack applications deployed to production, from my final degree project to personal products with real users.'
+          }
         />
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -43,7 +56,7 @@ export function Projects() {
                 <div className="relative aspect-video overflow-hidden border-b border-border bg-surface-hover">
                   <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/90">
-                      Ver más información
+                      {language === 'es' ? 'Ver más información' : 'See more information'}
                     </span>
                   </div>
                   {project.thumbnail ? (
@@ -75,7 +88,7 @@ export function Projects() {
                   </div>
                   
                   <p className="mb-6 flex-1 text-sm leading-relaxed text-muted">
-                    {project.description}
+                    {language === 'es' ? project.description : project.descriptionEn}
                   </p>
 
                   <div className="mt-auto flex flex-wrap gap-1.5">
@@ -96,7 +109,9 @@ export function Projects() {
         project={selectedProject}
         isOpen={!!selectedProject}
         onClose={() => setSelectedProject(null)}
+        language={language}
       />
+      <SectionDivider />
     </section>
   )
 }

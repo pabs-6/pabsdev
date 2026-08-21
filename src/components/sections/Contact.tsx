@@ -1,8 +1,13 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { GitHubIcon, LinkedInIcon } from '@/components/ui/SocialIcons'
 import { Button } from '@/components/ui/Button'
+import { SectionDivider } from '@/components/ui/SectionDivider'
 import { siteConfig, socialLinks } from '@/lib/data'
 import { Mail, Phone, MapPin, Send } from 'lucide-react'
+
+interface ContactProps {
+  language: 'es' | 'en'
+}
 
 const iconMap = {
   github: GitHubIcon,
@@ -10,7 +15,7 @@ const iconMap = {
   mail: Mail,
 } as const
 
-export function Contact() {
+export function Contact({ language }: ContactProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,29 +40,40 @@ export function Contact() {
     setFeedback('')
 
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL || '/api/contact', {
+      const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
+
+      if (!accessKey) {
+        throw new Error('missing access key')
+      }
+
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
         body: JSON.stringify({
+          access_key: accessKey,
           name: formData.name,
           email: formData.email,
-          subject: formData.subject,
+          subject: `Nuevo mensaje desde pabsdev: ${formData.subject}`,
           message: formData.message,
+          from_name: 'pabsdev — formulario de contacto',
         }),
       })
 
-      if (!response.ok) {
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
         throw new Error('No se pudo enviar')
       }
 
       setStatus('success')
-      setFeedback('Mensaje enviado correctamente. Gracias por contactar.')
+      setFeedback(language === 'es' ? 'Mensaje enviado correctamente. Gracias por contactar.' : 'Message sent successfully. Thanks for getting in touch.')
       setFormData({ name: '', email: '', subject: '', message: '' })
     } catch {
       setStatus('error')
-      setFeedback('No se pudo enviar el mensaje. Inténtalo de nuevo en unos momentos.')
+      setFeedback(language === 'es' ? 'No se pudo enviar el mensaje. Inténtalo de nuevo en unos momentos.' : 'The message could not be sent. Please try again in a few moments.')
     }
   }
 
@@ -68,13 +84,13 @@ export function Contact() {
           {/* Left Column: Form */}
           <div>
             <h3 className="mb-6 text-3xl font-bold tracking-tight text-foreground">
-              Envíame un mensaje
+              {language === 'es' ? '¿Buscas un desarrollador?' : 'Looking for a developer?'}
             </h3>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
-                    Nombre *
+                    {language === 'es' ? 'Nombre *' : 'Name *'}
                   </label>
                   <input
                     name="name"
@@ -87,7 +103,7 @@ export function Contact() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
-                    Email *
+                    {language === 'es' ? 'Email *' : 'Email *'}
                   </label>
                   <input
                     name="email"
@@ -101,7 +117,7 @@ export function Contact() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
-                  Asunto *
+                  {language === 'es' ? 'Asunto *' : 'Subject *'}
                 </label>
                 <input
                   name="subject"
@@ -114,7 +130,7 @@ export function Contact() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
-                  Mensaje *
+                  {language === 'es' ? 'Mensaje *' : 'Message *'}
                 </label>
                 <textarea
                   name="message"
@@ -122,7 +138,7 @@ export function Contact() {
                   rows={5}
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="Cuéntame más sobre tu proyecto..."
+                  placeholder={language === 'es' ? 'Cuéntame más sobre tu proyecto...' : 'Tell me more about your project...'}
                   className="w-full resize-none rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-foreground transition-colors focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                 />
               </div>
@@ -133,7 +149,9 @@ export function Contact() {
               ) : null}
 
               <Button type="submit" className="w-full justify-center" disabled={status === 'sending'}>
-                {status === 'sending' ? 'Enviando...' : 'Enviar Mensaje'}
+                {status === 'sending'
+                  ? (language === 'es' ? 'Enviando...' : 'Sending...')
+                  : (language === 'es' ? 'Enviar Mensaje' : 'Send Message')}
                 <Send size={16} />
               </Button>
             </form>
@@ -142,12 +160,12 @@ export function Contact() {
           {/* Right Column: Contact Info */}
           <div>
             <h3 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
-              Información de contacto
+              {language === 'es' ? 'Información de contacto' : 'Contact information'}
             </h3>
             <p className="mb-8 text-sm leading-relaxed text-muted">
-              Estoy disponible para proyectos freelance, colaboraciones y
-              oportunidades laborales. No dudes en contactarme por cualquier
-              medio.
+              {language === 'es'
+                ? 'Estoy abierto a oportunidades laborales, prácticas y colaboraciones. Cuéntame tu proyecto o vacante y te responderé lo antes posible.'
+                : 'I am open to job opportunities, internships and collaborations. Tell me about your project or role and I will get back to you as soon as possible.'}
             </p>
 
             <div className="mb-10 space-y-6">
@@ -171,7 +189,7 @@ export function Contact() {
                   <Phone size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground">Teléfono</p>
+                  <p className="text-sm font-bold text-foreground">{language === 'es' ? 'Teléfono' : 'Phone'}</p>
                   <p className="text-sm text-accent">{siteConfig.phone}</p>
                 </div>
               </div>
@@ -181,16 +199,16 @@ export function Contact() {
                   <MapPin size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-foreground">Ubicación</p>
+                  <p className="text-sm font-bold text-foreground">{language === 'es' ? 'Ubicación' : 'Location'}</p>
                   <p className="text-sm text-foreground">
-                    {siteConfig.location}
+                    {language === 'es' ? siteConfig.location : siteConfig.locationEn}
                   </p>
                 </div>
               </div>
             </div>
 
             <h4 className="mb-4 text-lg font-bold text-foreground">
-              Sígueme en redes sociales
+              {language === 'es' ? 'Sígueme en redes sociales' : 'Follow me on social media'}
             </h4>
             <div className="flex gap-3">
               {socialLinks.map((link) => {
@@ -213,6 +231,7 @@ export function Contact() {
           </div>
         </div>
       </div>
+      <SectionDivider />
     </section>
   )
 }

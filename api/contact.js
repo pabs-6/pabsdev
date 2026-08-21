@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer'
+import { sendContactEmail } from './lib/sendContactEmail.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,38 +12,21 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Faltan campos obligatorios' })
   }
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  })
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Email no válido' })
+  }
 
   try {
-    await transporter.sendMail({
-      from: process.env.GMAIL_FROM || process.env.GMAIL_USER,
-      to: process.env.GMAIL_TO || process.env.GMAIL_USER,
-      replyTo: email,
-      subject: `Nuevo mensaje desde pabsdev: ${subject}`,
-      text: `Nombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-          <h3>Nuevo mensaje desde tu portafolio</h3>
-          <p><strong>Nombre:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Asunto:</strong> ${subject}</p>
-          <p><strong>Mensaje:</strong></p>
-          <p>${message.replace(/\n/g, '<br />')}</p>
-        </div>
-      `,
-    })
-
+    await sendContactEmail({ name, email, subject, message })
     return res.status(200).json({ success: true })
   } catch (error) {
     console.error('Error sending email:', error)
+
+    if (error.message === 'Email service not configured') {
+      return res.status(503).json({ error: 'Servicio de email no configurado' })
+    }
+
     return res.status(500).json({ error: 'No se pudo enviar el email' })
   }
 }

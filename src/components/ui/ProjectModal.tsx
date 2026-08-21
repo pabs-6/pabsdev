@@ -10,10 +10,12 @@ interface ProjectModalProps {
   project: Project | null
   isOpen: boolean
   onClose: () => void
+  language: 'es' | 'en'
 }
 
-export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
-  // Prevent scrolling on body when modal is open
+export function ProjectModal({ project, isOpen, onClose, language }: ProjectModalProps) {
+  const isEs = language === 'es'
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -26,6 +28,10 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   }, [isOpen])
 
   if (!project) return null
+
+  const technicalDetails = isEs
+    ? project.technicalDetails
+    : project.technicalDetailsEn ?? project.technicalDetails
 
   return (
     <AnimatePresence>
@@ -60,7 +66,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
 
               <div className="flex-1 overflow-y-auto p-6 sm:p-8">
                 <div className="grid gap-10 lg:grid-cols-2">
-                  {/* Left Column: Details */}
                   <div className="flex flex-col gap-6">
                     <div>
                       <h2 className="mb-2 text-3xl font-bold text-foreground">
@@ -75,11 +80,11 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
 
                     <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">
-                        Detalles técnicos
+                        {isEs ? 'Detalles técnicos' : 'Technical details'}
                       </h3>
-                      {project.technicalDetails && project.technicalDetails.length > 0 ? (
+                      {technicalDetails && technicalDetails.length > 0 ? (
                         <div className="space-y-3">
-                          {project.technicalDetails.map((detail, idx) => (
+                          {technicalDetails.map((detail, idx) => (
                             <p key={idx} className="text-muted leading-relaxed">
                               {detail}
                             </p>
@@ -87,7 +92,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                         </div>
                       ) : (
                         <p className="text-muted leading-relaxed">
-                          {project.description}
+                          {isEs ? project.description : project.descriptionEn}
                         </p>
                       )}
                     </div>
@@ -101,7 +106,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                           className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover shadow-sm shadow-accent/20"
                         >
                           <ExternalLink size={18} />
-                          Ver Demo
+                          {isEs ? 'Ver demo' : 'View demo'}
                         </a>
                       )}
                       {project.repoUrl && (
@@ -112,21 +117,24 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                           className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-hover hover:border-accent/40"
                         >
                           <GitHubIcon className="h-5 w-5" />
-                          Repositorio
+                          {isEs ? 'Repositorio' : 'Repository'}
                         </a>
                       )}
                     </div>
                   </div>
 
-                  {/* Right Column: Carousel */}
                   <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-semibold text-foreground lg:hidden">
-                      Galería
+                      {isEs ? 'Galería' : 'Gallery'}
                     </h3>
-                    <ImageCarousel images={project.images || (project.thumbnail ? [project.thumbnail] : [])} />
+                    <ImageCarousel
+                      images={
+                        project.images || (project.thumbnail ? [project.thumbnail] : [])
+                      }
+                    />
                     <div className="rounded-xl border border-border bg-surface-hover/70 p-4">
                       <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-muted">
-                        Tecnologías
+                        {isEs ? 'Tecnologías' : 'Technologies'}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {project.tags.map((tag) => (

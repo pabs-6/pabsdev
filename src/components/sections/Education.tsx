@@ -1,16 +1,29 @@
+import { SectionDivider } from '@/components/ui/SectionDivider'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { education } from '@/lib/data'
 import { motion } from 'framer-motion'
 import { GraduationCap, MapPin } from 'lucide-react'
 
-export function Education() {
+interface EducationProps {
+  language: 'es' | 'en'
+}
+
+export function Education({ language }: EducationProps) {
   return (
     <section id="education" className="px-6 py-24">
       <div className="mx-auto max-w-5xl">
         <SectionHeading
-          label="Formación"
-          title="Mi formación académica"
-          description="La base que sustenta mi carrera como desarrollador web."
+          label={language === 'es' ? 'Formación' : 'Education'}
+          title={
+            language === 'es'
+              ? 'Formación académica oficial'
+              : 'Official academic training'
+          }
+          description={
+            language === 'es'
+              ? 'Titulación en Desarrollo de Aplicaciones Web con enfoque práctico y orientado al mercado laboral.'
+              : 'Web Application Development degree with a practical, job-market-oriented approach.'
+          }
         />
 
         <motion.div
@@ -32,7 +45,7 @@ export function Education() {
             {/* Content */}
             <div className="flex-1 space-y-3">
               <h3 className="text-xl font-bold text-foreground sm:text-2xl">
-                {education.degree}
+                {language === 'es' ? education.degree : education.degreeEn}
               </h3>
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
@@ -41,7 +54,7 @@ export function Education() {
                 </span>
                 <span className="inline-flex items-center gap-1 text-muted">
                   <MapPin size={14} />
-                  {education.location}
+                  {language === 'es' ? education.location : education.locationEn}
                 </span>
                 <span className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
                   {education.period}
@@ -49,12 +62,13 @@ export function Education() {
               </div>
 
               <p className="text-muted leading-relaxed">
-                {education.description}
+                {language === 'es' ? education.description : education.descriptionEn}
               </p>
             </div>
           </div>
         </motion.div>
       </div>
+      <SectionDivider />
     </section>
   )
 }

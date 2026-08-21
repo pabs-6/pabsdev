@@ -1,15 +1,30 @@
+import { SectionDivider } from '@/components/ui/SectionDivider'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { siteConfig } from '@/lib/data'
 import { motion } from 'framer-motion'
 
-export function About() {
+interface AboutProps {
+  language: 'es' | 'en'
+}
+
+export function About({ language }: AboutProps) {
+  const isEs = language === 'es'
+
   return (
     <section id="about" className="px-6 py-24">
       <div className="mx-auto max-w-5xl">
         <SectionHeading
-          label="Mi Historia"
-          title="Soy desarrollador Full Stack con foco en backend"
-          description="Me gusta construir soluciones tecnológicas robustas y funcionales, alineadas con las necesidades de las empresas y la experiencia de los usuarios."
+          label={isEs ? 'Sobre mí' : 'About me'}
+          title={
+            isEs
+              ? 'Desarrollador orientado a producto y resultados'
+              : 'Product-minded developer focused on results'
+          }
+          description={
+            isEs
+              ? 'Combino formación técnica, experiencia en empresa y proyectos propios para aportar soluciones web completas y bien ejecutadas.'
+              : 'I combine technical training, corporate experience and personal projects to deliver complete, well-executed web solutions.'
+          }
         />
 
         <div className="grid items-stretch gap-12 min-h-[430px] md:grid-cols-[1fr_320px]">
@@ -20,7 +35,7 @@ export function About() {
             transition={{ duration: 0.5 }}
             className="flex h-full flex-col justify-center space-y-6"
           >
-            {siteConfig.about.map((paragraph) => (
+            {(isEs ? siteConfig.about : siteConfig.aboutEn).map((paragraph) => (
               <p key={paragraph} className="text-muted leading-relaxed">
                 {paragraph}
               </p>
@@ -29,22 +44,25 @@ export function About() {
             <div className="grid gap-4 pt-2 sm:grid-cols-2">
               <div className="rounded-xl border border-border bg-surface-hover/70 p-4">
                 <h3 className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-                  Frontend
+                  {siteConfig.aboutHighlights.frontend.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-muted">
-                  Diseño interfaces claras, responsivas y centradas en la experiencia del usuario, con React, TypeScript y una base sólida en usabilidad.
+                  {isEs
+                    ? siteConfig.aboutHighlights.frontend.description
+                    : siteConfig.aboutHighlights.frontend.descriptionEn}
                 </p>
               </div>
               <div className="rounded-xl border border-border bg-surface-hover/70 p-4">
                 <h3 className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-accent">
-                  Backend
+                  {siteConfig.aboutHighlights.backend.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-muted">
-                  Desarrollo lógica de negocio, APIs y conexiones con bases de datos para construir aplicaciones robustas, escalables y preparadas para crecer.
+                  {isEs
+                    ? siteConfig.aboutHighlights.backend.description
+                    : siteConfig.aboutHighlights.backend.descriptionEn}
                 </p>
               </div>
             </div>
-            
           </motion.div>
 
           <motion.div
@@ -57,24 +75,44 @@ export function About() {
             <div className="flex h-full w-full flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-lg shadow-black/10">
               <div className="flex-1 bg-surface p-8">
                 <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-full border border-border bg-surface-hover text-4xl font-bold text-foreground shadow-sm shadow-black/10">
-                  {siteConfig.name.charAt(0)}
+                  {siteConfig.shortName.charAt(0)}
                 </div>
               </div>
 
               <div className="border-t border-border bg-surface p-6">
-                <h3 className="mb-4 text-lg font-semibold text-foreground">Datos Personales</h3>
+                <h3 className="mb-4 text-lg font-semibold text-foreground">
+                  {isEs ? 'Perfil profesional' : 'Professional profile'}
+                </h3>
                 <div className="space-y-3 text-sm text-muted">
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium text-foreground/80">Nombre:</span>
-                    <span className="text-foreground">{siteConfig.name}</span>
+                    <span className="font-medium text-foreground/80">
+                      {isEs ? 'Nombre:' : 'Name:'}
+                    </span>
+                    <span className="text-right text-foreground">{siteConfig.name}</span>
                   </div>
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium text-foreground/80">Edad:</span>
-                    <span className="text-foreground">20 años</span>
+                    <span className="font-medium text-foreground/80">
+                      {isEs ? 'Rol:' : 'Role:'}
+                    </span>
+                    <span className="text-right text-foreground">
+                      {isEs ? siteConfig.role : siteConfig.roleEn}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium text-foreground/80">Ubicación:</span>
-                    <span className="text-foreground">{siteConfig.location}</span>
+                    <span className="font-medium text-foreground/80">
+                      {isEs ? 'Ubicación:' : 'Location:'}
+                    </span>
+                    <span className="text-right text-foreground">
+                      {isEs ? siteConfig.location : siteConfig.locationEn}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium text-foreground/80">
+                      {isEs ? 'Estado:' : 'Status:'}
+                    </span>
+                    <span className="text-right text-accent">
+                      {isEs ? siteConfig.availability : siteConfig.availabilityEn}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -82,6 +120,7 @@ export function About() {
           </motion.div>
         </div>
       </div>
+      <SectionDivider />
     </section>
   )
 }

@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react'
 interface HeaderProps {
   theme: 'dark' | 'light'
   onToggleTheme: () => void
+  language: 'es' | 'en'
+  onToggleLanguage: () => void
 }
 
-export function Header({ theme, onToggleTheme }: HeaderProps) {
+export function Header({ theme, onToggleTheme, language, onToggleLanguage }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -42,12 +44,20 @@ export function Header({ theme, onToggleTheme }: HeaderProps) {
               href={link.href}
               className="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-foreground"
             >
-              {link.label}
+              {language === 'es' ? link.label : link.labelEn}
             </a>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onToggleLanguage}
+            aria-label={language === 'es' ? 'Switch to English' : 'Cambiar a español'}
+            className="rounded-lg px-2.5 py-2 text-sm font-medium text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+          >
+            {language === 'es' ? 'EN' : 'ES'}
+          </button>
           <button
             type="button"
             onClick={onToggleTheme}
@@ -77,7 +87,7 @@ export function Header({ theme, onToggleTheme }: HeaderProps) {
               onClick={() => setMenuOpen(false)}
               className="block rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
             >
-              {link.label}
+              {language === 'es' ? link.label : link.labelEn}
             </a>
           ))}
         </nav>
