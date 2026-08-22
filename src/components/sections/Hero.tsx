@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/Button'
+import { CvDownloadDropdown } from '@/components/ui/CvDownloadDropdown'
 import { SectionDivider } from '@/components/ui/SectionDivider'
 import { GitHubIcon, LinkedInIcon } from '@/components/ui/SocialIcons'
 import { siteConfig, socialLinks } from '@/lib/data'
@@ -72,6 +73,7 @@ export function Hero({ language }: HeroProps) {
                 LinkedIn
               </Button>
             )}
+            <CvDownloadDropdown language={language} />
           </div>
         </motion.div>
       </div>
