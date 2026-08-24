@@ -65,6 +65,8 @@ export function CvDownloadDropdown({ language }: CvDownloadDropdownProps) {
               role="menuitem"
               href={cv.href}
               download={cv.fileName}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setOpen(false)}
               className="flex w-full items-center px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-surface-hover"
             >

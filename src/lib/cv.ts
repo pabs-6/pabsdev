@@ -11,14 +11,14 @@ export const cvDownloads: CvDownload[] = [
     lang: 'es',
     labelEs: 'Español',
     labelEn: 'Spanish',
-    href: '/cv/Pablo_Serrano_CV_ES.pdf',
-    fileName: 'Pablo_Serrano_CV_ES.pdf',
+    href: '/cv/CV_Pablo_Serrano.pdf',
+    fileName: 'CV_Pablo_Serrano.pdf',
   },
   {
     lang: 'en',
     labelEs: 'Inglés',
     labelEn: 'English',
-    href: '/cv/Pablo_Serrano_CV_EN.pdf',
-    fileName: 'Pablo_Serrano_CV_EN.pdf',
+    href: '/cv/CV_Pablo_Serrano_EN.pdf',
+    fileName: 'CV_Pablo_Serrano_EN.pdf',
   },
 ]
